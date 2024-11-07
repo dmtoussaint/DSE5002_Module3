@@ -29,12 +29,19 @@ Note:
 You will probably want to use stringr
 
 ```{R}
+library(stringr)
+
 name_in="Sheets, Dave"
 
 reorder_name<-function(last_first){
-  #your code here
+  #split the string by the comma and then trim the spaces
+  name_parts <- str_split(last_first, ",\\s*")[[1]]
+  # Reorder the name as "First Last"
+  reordered_name <- paste(name_parts[2], name_parts[1])
+  return(reordered_name)
 }
 
+reorder_name(name_in)
 
 ```
 
@@ -46,10 +53,19 @@ x=c(1,3,5,7,9,11,13)
 
 powers_df<-function(x)
 {
+  #create the dataframe to take in x values
+  df <- data.frame(
+    #set what the values of x are equal to
+    x = x,
+    x_squared = x^2,
+    sqrt_x = sqrt(x)
+  )
   
+  return(df)
 }
 
-#your code here
+x <- c(1, 3, 5, 7, 9, 11, 13)
+powers_df(x)
 
 ```
 
@@ -60,10 +76,39 @@ powers_df<-function(x)
     y=0.5x if x>=0
     
     This is a variant on a relu function as used in some neural networks.
+    
+```{r}
+  
+relu_variant <- function(x) {
+  # Apply the function
+  if (x < 0) {
+    return(0.3 * x)
+  } else if (x >= 0) {
+    return(0.5 * x)
+  }
+}
+
+relu_variant(2)
+relu_variant(-3)
+```
 
 4.) Write a function that takes in a value x and returns the first power of two
 greater than x  (use a While loop)
+```{r}
+first_power_of_two <- function(x) {
+  # variable called power_of_two recieves the x values starting at 1
+  power_of_two <- 1
+  
+  # Keep multiplying by 2 until we exceed x
+  while (power_of_two <= x) {
+    power_of_two <- power_of_two * 2
+  }
+  
+  return(power_of_two)
+}
 
+first_power_of_two(2)
+```
 
 5) Two Sum - Write a function named two_sum()
 
@@ -102,24 +147,30 @@ Only one valid answer exists.
 *Use the function seq_along to iterate*
 
 ```{r}
-two_sum <- function(nums_vector,target){
-  #your code here
- 
+two_sum <- function(nums_vector, target) {
+  # Initialize an empty vector to store the result
+  result <- c()
+  
+  # Use a nested loop to check every pair of numbers
+  for (i in seq_along(nums_vector)) {
+    for (j in (i + 1):length(nums_vector)) {
+      # Ensure both values are not NA before proceeding with the comparison
+      if (!is.na(nums_vector[i]) && !is.na(nums_vector[j]) && nums_vector[i] + nums_vector[j] == target) {
+        # If a pair is found that sums to the target, store the indices
+        result <- c(result, i, j)
+      }
+    }
+  }
+  
+  return(result)
 }
 
-
-
-
 # Test code
-nums_vector <- c(5,7,12,34,6,10,8,9)
+nums_vector <- c(5, 7, 12, 34, 6, 10, 8, 9)
 target <- 13
- 
-z=two_sum(nums_vector,target)
+
+z = two_sum(nums_vector, target)
 print(z)
-#expected answers
-#[1] 1 7
-#[1] 2 5
-#[1] 5 2
 
 ```
 
@@ -135,13 +186,26 @@ use the str_extract function from stringr
 use the same regex search pattern from each
 
 -What does \\d match to?  or alternatively [[:digit:]]
+\\d matches any single digit (0–9)
 
 -How do you specify a specific number of repeated characters
+To specify a specific number of repeated characters, you use {n}, where n is the number of repetitions
 
 ```{R}
+library(stringr)
+
 a="Please call me at 456-123-2329, asap"
 b="Hey, we have a code 234 on machine a-234-12, call me at 678-321-98766"
 c="On 12-23-2022, Joe over at 122 Turnpike, dialled 912-835-4756, tell me by 9:02 pm Wed"
+
+# Use str_extract to extract the phone number
+phone_a <- str_extract(a, "\\d{3}-\\d{3}-\\d{4}")
+phone_b <- str_extract(b, "\\d{3}-\\d{3}-\\d{4}")
+phone_c <- str_extract(c, "\\d{3}-\\d{3}-\\d{4}")
+
+print(phone_a)  
+print(phone_b) 
+print(phone_c) 
 ```
 
 7.)  For lines below,  extract the domains (ie the part of the address after @)
@@ -151,5 +215,12 @@ d="jimmy.halibut@gmail.com"
 e="His address is:  c.brown@hopeles.org, do write him"
 f="h.potter@hogwarts.edu is bouncing back on me, I wonder why?"
 
+domain_d <- str_extract(d, "(?<=@)[a-zA-Z0-9.-]+")
+domain_e <- str_extract(e, "(?<=@)[a-zA-Z0-9.-]+")
+domain_f <- str_extract(f, "(?<=@)[a-zA-Z0-9.-]+")
+
+print(domain_d)  
+print(domain_e)  
+print(domain_f) 
 ```
 
